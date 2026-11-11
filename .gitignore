@@ -1,0 +1,28 @@
+
+# Eclipse
+.metadata/
+.settings/
+.classpath
+.project
+
+# Java / Maven
+target/
+**/target/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+application-local.properties
+
+# Logs
+*.log
+
+# React / Node
+node_modules/
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
