@@ -18,8 +18,11 @@ public class AiEvaluationService {
 
     private final RestClient restClient;
 
-    @Value("${GROQ_API_KEY}")
+    @Value("${groq.api-key:}")
     private String groqApiKey;
+
+    @Value("${groq.model:openai/gpt-oss-20b}")
+    private String groqModel;
 
     public AiEvaluationService() {
         this.restClient = RestClient.builder()
@@ -44,15 +47,15 @@ public class AiEvaluationService {
                 3. Completeness
                 4. Clarity
 
-                Return the result in this format:
-
-                Score: (0 to 10)
-                Feedback: (Detailed feedback)
-                Improvements: (What the candidate should improve)
+                Return a concise, evidence-based evaluation in exactly this format:
+                Score: <number from 0 to 10>
+                Feedback: <what was correct and what was missing>
+                Improvements: <specific actionable improvements>
+                Do not award points for claims that are not explained. Do not include a score outside 0 to 10.
                 """.formatted(question, answer);
 
         Map<String, Object> requestBody = Map.of(
-                "model", "openai/gpt-oss-20b",
+                "model", groqModel,
                 "messages", new Object[] {
                         Map.of(
                                 "role", "system",
@@ -65,6 +68,10 @@ public class AiEvaluationService {
                 },
                 "temperature", 0.3
         );
+
+        if (groqApiKey == null || groqApiKey.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Groq API key is not configured. Set GROQ_API_KEY in the backend environment.");
+        }
 
         try {
             JsonNode response = restClient.post()

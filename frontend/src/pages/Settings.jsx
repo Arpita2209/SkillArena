@@ -1,0 +1,16 @@
+import { useEffect, useState } from "react";
+import { UserRound, SlidersHorizontal, ShieldCheck, Save, LogOut, Info } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+
+const KEY="skillarena_preferences";
+function readPreferences(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch{return {};}}
+export default function Settings(){
+ const {user,logout}=useAuth(); const [name]=useState(user?.name||""); const [email]=useState(user?.email||""); const [theme,setTheme]=useState("dark"); const [reminders,setReminders]=useState(true); const [saved,setSaved]=useState(false);
+ useEffect(()=>{const p=readPreferences();setTheme(p.theme||"dark");setReminders(p.reminders??true);},[]);
+ function save(e){e.preventDefault();localStorage.setItem(KEY,JSON.stringify({theme,reminders}));setSaved(true);setTimeout(()=>setSaved(false),2500);}
+ return <main className="sa-work-page"><header className="sa-work-heading"><div><span className="sa-card-kicker">WORKSPACE PREFERENCES</span><h1>A workspace that works for you.</h1><p>Review your account details and manage local application preferences.</p></div><span className="sa-work-heading-icon"><SlidersHorizontal size={25}/></span></header>
+ <form className="sa-settings-layout" onSubmit={save}><section className="sa-work-card"><div className="sa-work-card-head"><div><span className="sa-card-kicker">ACCOUNT</span><h2>Profile information</h2><p>Details currently available from your signed-in session.</p></div><UserRound size={21}/></div><label className="sa-setting-field">Display name<input value={name} readOnly placeholder="Your name"/></label><label className="sa-setting-field">Email address<input value={email} readOnly/></label><p className="sa-muted-note"><Info size={14}/> Profile changes are not sent to the server yet. A profile update endpoint is needed to persist your name.</p></section>
+ <section className="sa-work-card"><div className="sa-work-card-head"><div><span className="sa-card-kicker">PREFERENCES</span><h2>Application settings</h2><p>These preferences are saved in this browser.</p></div><SlidersHorizontal size={21}/></div><label className="sa-setting-field">Appearance<select value={theme} onChange={e=>setTheme(e.target.value)}><option value="dark">Dark (current design)</option><option value="system">Use system preference</option></select></label><label className="sa-toggle-row"><span><strong>Practice reminders</strong><small>Allow reminder preference in this browser.</small></span><input type="checkbox" checked={reminders} onChange={e=>setReminders(e.target.checked)}/></label><div className="sa-settings-actions"><button className="sa-work-primary" type="submit"><Save size={16}/> Save preferences</button>{saved&&<span className="sa-save-confirm"><ShieldCheck size={15}/> Saved on this device</span>}</div></section>
+ <section className="sa-work-card sa-security-card"><div className="sa-work-card-head"><div><span className="sa-card-kicker">SECURITY</span><h2>Session</h2><p>Sign out of this SkillArena session on this device.</p></div><ShieldCheck size={21}/></div><button type="button" className="sa-secondary-danger" onClick={logout}><LogOut size={16}/> Sign out</button></section></form>
+ </main>;
+}

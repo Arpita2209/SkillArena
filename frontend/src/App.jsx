@@ -1,7 +1,7 @@
 
 import "./App.css";
 
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 
 import Home from "./pages/Home";
 import BackendTest from "./pages/BackendTest";
@@ -9,69 +9,57 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
-import FeaturePlaceholder from "./pages/FeaturePlaceholder";
+import InterviewSetup from "./pages/InterviewSetup";
+import InterviewRoom from "./pages/InterviewRoom";
+import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 
-function App() {
+function ProtectedRoute() {
+  const { isAuthenticated } = useAuth();
+
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+}
+
+function PublicOnlyRoute() {
+  const { isAuthenticated } = useAuth();
+
+  return isAuthenticated ? <Navigate to="/dashboard" replace /> : <Outlet />;
+}
+
+function AppRoutes() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/backend-test" element={<BackendTest />} />
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/backend-test" element={<BackendTest />} />
+
+      <Route element={<PublicOnlyRoute />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+      </Route>
 
+      <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
 
-          <Route
-            path="resume"
-            element={
-              <FeaturePlaceholder
-                eyebrow="RESUME INTELLIGENCE"
-                title="Your professional story, refined."
-                description="Upload your resume and get AI-powered insights to improve your profile."
-              />
-            }
-          />
-
-          <Route
-            path="interviews"
-            element={
-              <FeaturePlaceholder
-                eyebrow="INTERVIEW PRACTICE"
-                title="Prepare for what comes next."
-                description="Practice with Text, Voice or Hybrid interview experiences."
-              />
-            }
-          />
-
-          <Route
-            path="reports"
-            element={
-              <FeaturePlaceholder
-                eyebrow="PERFORMANCE ANALYTICS"
-                title="Measure your progress."
-                description="Review your interview performance and identify opportunities to improve."
-              />
-            }
-          />
-
-          <Route
-            path="settings"
-            element={
-              <FeaturePlaceholder
-                eyebrow="PREFERENCES"
-                title="Make SkillArena yours."
-                description="Manage your profile and application preferences."
-              />
-            }
-          />
+          <Route path="interviews" element={<InterviewSetup />} />
+          <Route path="reports" element={<Reports />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
+        <Route path="/dashboard/interviews/session/:sessionId" element={<InterviewRoom />} />
+      </Route>
 
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </BrowserRouter>
+  );
+}
