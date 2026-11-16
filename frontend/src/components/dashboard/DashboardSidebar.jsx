@@ -1,9 +1,8 @@
 import { NavLink } from "react-router-dom";
-import { BrainCircuit, LayoutDashboard, FileText, Mic2, ChartNoAxesCombined, Settings } from "lucide-react";
+import { BrainCircuit, LayoutDashboard, Mic2, ChartNoAxesCombined, Settings } from "lucide-react";
 
 const items = [
   ["Overview", "/dashboard", LayoutDashboard],
-  ["My Resume", "/dashboard/resume", FileText],
   ["Interviews", "/dashboard/interviews", Mic2],
   ["Reports", "/dashboard/reports", ChartNoAxesCombined],
 ];

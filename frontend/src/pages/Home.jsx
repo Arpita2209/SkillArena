@@ -1,14 +1,9 @@
 
 import { Link } from "react-router-dom";
-import { ArrowRight, BrainCircuit, FileText, Mic2, Sparkles, Target, Zap } from "lucide-react";
+import { ArrowRight, BrainCircuit, Mic2, Sparkles, Target, Zap } from "lucide-react";
 
 function Home() {
   const features = [
-    {
-      icon: FileText,
-      title: "Resume Intelligence",
-      description: "Analyze your resume, identify skill gaps, and discover opportunities to improve your profile.",
-    },
     {
       icon: BrainCircuit,
       title: "AI Mock Interviews",
@@ -16,8 +11,8 @@ function Home() {
     },
     {
       icon: Mic2,
-      title: "Flexible Interview Modes",
-      description: "Choose text, voice, or hybrid interviews and practice in the way that suits you.",
+      title: "Voice-Only Interview Experience",
+      description: "Practise natural spoken interviews with an AI interviewer that adapts follow-up questions to your answers.",
     },
     {
       icon: Target,
@@ -157,7 +152,7 @@ function Home() {
           <div className="step-item">
             <span>01</span>
             <h3>Build your profile</h3>
-            <p>Upload your resume and understand your current skills.</p>
+            <p>Practise live voice interviews and receive detailed feedback.</p>
           </div>
           <div className="step-item">
             <span>02</span>
